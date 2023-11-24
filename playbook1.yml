@@ -1,0 +1,25 @@
+# monitoring.yml
+
+---
+- hosts: localhost
+  become: yes
+
+  tasks:
+    - name: Copy Prometheus configuration file
+      copy:
+        src: prometheus.yml
+        dest: /etc/prometheus/prometheus.yml
+      notify:
+        - Restart Prometheus
+
+    - name: Configure Prometheus service
+      systemd:
+        name: prometheus
+        state: restarted
+
+  handlers:
+    - name: Restart Prometheus
+      systemd:
+        name: prometheus
+        state: restarted
+
